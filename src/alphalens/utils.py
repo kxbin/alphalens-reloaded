@@ -17,6 +17,7 @@ import pandas as pd
 import numpy as np
 import re
 import warnings
+from pandas.tseries.offsets import Minute
 
 from IPython.display import display
 from pandas.tseries.offsets import (
@@ -355,7 +356,10 @@ def compute_forward_returns(
 
     # now set the columns correctly
     df = df[column_list]
-    df.index.levels[0].freq = freq
+    if isinstance(prices.index.freq, Minute):
+        df.index.levels[0].freq = "T"
+    else:
+        df.index.levels[0].freq = freq
     df.index.set_names(["date", "asset"], inplace=True)
 
     return df
